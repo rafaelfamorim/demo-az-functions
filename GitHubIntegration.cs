@@ -16,7 +16,7 @@ namespace Demo.AzFunction
         [FunctionName("GitHubIntegration")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function,  "post", Route = null)] HttpRequest req,
-            [SendGrid(ApiKey = "CustomSendGridKeyAppSettingName")] IAsyncCollector<SendGridMessage> message,
+            [SendGrid(ApiKey = "CustomSendGridKeyAppSettingName")] IAsyncCollector<SendGridMessage> outMessage,
             ILogger log)
         {
             log.LogInformation("Our GitHub Monitor processed an action.");
@@ -24,7 +24,18 @@ namespace Demo.AzFunction
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<Rootobject>(requestBody);
 
+            var fromEmail = Environment.GetEnvironmentVariable("FromEmail");
+            var toEmail = Environment.GetEnvironmentVariable("ToEmail");
+
             log.LogInformation(requestBody);
+
+            var message = new SendGridMessage();
+            message.AddTo(toEmail);
+            message.AddContent("text/html", requestBody);
+            message.SetFrom(new EmailAddress(fromEmail));
+            message.SetSubject("Github Updated");
+
+            await outMessage.AddAsync(message);
 
             return new OkResult();
         }
