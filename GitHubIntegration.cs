@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SendGrid.Helpers.Mail;
 
 namespace Demo.AzFunction
 {
@@ -15,6 +16,7 @@ namespace Demo.AzFunction
         [FunctionName("GitHubIntegration")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function,  "post", Route = null)] HttpRequest req,
+            [SendGrid(ApiKey = "CustomSendGridKeyAppSettingName")] IAsyncCollector<SendGridMessage> message,
             ILogger log)
         {
             log.LogInformation("Our GitHub Monitor processed an action.");
