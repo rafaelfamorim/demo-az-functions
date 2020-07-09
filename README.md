@@ -5,5 +5,11 @@ Simple function created for demo purpose, this function accepts HTTP requests fr
 
 It only sends emails for New Issues or Comments, all other event types are logged and ignored.
 
+## If you want to run it
+
+- Create these 3 keys in your environment:
+	- "CustomSendGridKeyAppSettingName" - Your SendGrid API Key (you can create a free account to test :D )
+	- "FromEmail" - The from email, this address must be validated in SendGrid platform 
+	- "ToEmail" - the email would receive your notication
 
 
