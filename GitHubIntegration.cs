@@ -51,6 +51,7 @@ namespace Demo.AzFunction
             }
             else
             {
+                log.LogInformation($"Action Ignored: {data.action}");
                 return new OkResult();
             }
 
