@@ -1,14 +1,13 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SendGrid.Helpers.Mail;
-using System.Reflection.Metadata.Ecma335;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Demo.AzFunction
 {
@@ -47,12 +46,13 @@ namespace Demo.AzFunction
                 action = "added a new comment";
                 avatar_url = data.comment.user.avatar_url;
                 username = data.comment.user.login;
-
             }
             else
             {
+                log.LogWarning($"Action Ignored: {data.action}");
                 return new OkResult();
             }
+
             log.LogInformation($"Processing Action: {data.action}");
 
             template = template.Replace("{{title}}", title)
@@ -60,8 +60,6 @@ namespace Demo.AzFunction
                                .Replace("{{avatar_img}}", avatar_url)
                                .Replace("{{username}}", username)
                                .Replace("{{issue_url}}", data.issue.html_url);
-
-            // log.LogInformation(requestBody);
 
             var message = new SendGridMessage();
             message.AddTo(toEmail);
@@ -75,6 +73,7 @@ namespace Demo.AzFunction
         }
     }
 
+    #region models
     public class Rootobject
     {
         public string action { get; set; }
@@ -264,4 +263,5 @@ namespace Demo.AzFunction
         public string type { get; set; }
         public bool site_admin { get; set; }
     }
+    #endregion
 }
