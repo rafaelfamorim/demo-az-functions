@@ -51,9 +51,10 @@ namespace Demo.AzFunction
             }
             else
             {
-                log.LogInformation($"Action Ignored: {data.action}");
+                log.LogWarning($"Action Ignored: {data.action}");
                 return new OkResult();
             }
+            log.LogInformation($"Processing Action: {data.action}");
 
             template = template.Replace("{{title}}", title)
                                .Replace("{{action}}",action)
